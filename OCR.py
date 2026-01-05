@@ -144,7 +144,6 @@ def run(app_id, api_key, secret_key):
     # 调用鼠标框选识别（核心功能，无任何报错）
     select_text = select_area_ocr(str(app_id), str(api_key), str(secret_key))
 
-    print(select_text)
     # 打印识别结果
     return select_text if select_text else "识别失败\n"
 

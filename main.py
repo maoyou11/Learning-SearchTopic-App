@@ -22,31 +22,35 @@ from OCR import run as ocr_run
 import ssl
 import websocket
 import functools
+from move_mouse import move_abcd
 import pynput.keyboard._win32, pynput.mouse._win32  # 强制提前加载后端
 
 # 全局状态变量
 current_opacity = 0.5  # 窗口透明度
-text_size = 10         # 字体大小
-is_small = False       # 窗口大小状态
-x = 0                  # 拖动窗口时的x坐标
-y = 0                  # 拖动窗口时的y坐标
+text_size = 10  # 字体大小
+is_small = False  # 窗口大小状态
+x = 0  # 拖动窗口时的x坐标
+y = 0  # 拖动窗口时的y坐标
 deepseek_api_key = ''  # Deepseek API Key（运行时可热切换）
 deepseek_model = 'deepseek-chat'  # Deepseek 模型（运行时可热切换）
 app_id = ''  # ocr app_id
 api_key = ''  # ocr api_key
 secret_key = ''  # ocr secret_key
+ai_answer_all = ''
+
 
 # 事件处理函数
-
 def start_move(event):
     """鼠标按下，记录窗口当前位置"""
     global x, y
     x = event.x
     y = event.y
 
+
 def stop_move(event):
     """鼠标拖动，移动窗口"""
     root.geometry(f"+{event.x_root - x}+{event.y_root - y}")
+
 
 def change_text_size(event):
     """Ctrl+滚轮调整字体大小"""
@@ -65,26 +69,31 @@ def change_text_size(event):
             text_size -= 1
         ai_ui['ai_text_box'].config(font=("Arial", text_size))
 
+
 def on_change_weight(event):
     """F3切换窗口大小"""
     global is_small, current_opacity
     is_small, current_opacity = change_weight(event, root, is_small, current_opacity)
+
 
 def on_change_opacity(event):
     """Ctrl+滚轮调整窗口透明度"""
     global current_opacity
     current_opacity = change_opacity(event, root, current_opacity, is_small)
 
+
 def on_change_opacity0(event):
     """右键切换窗口透明度"""
     global current_opacity
     current_opacity = change_opacity0(event, root, current_opacity, is_small)
+
 
 def on_ai_button():
     """切换到AI界面"""
     main_ui['search_frame'].pack_forget()
     main_ui['main_frame'].pack_forget()
     ai_ui['ai_frame'].pack(fill="both", expand=True)
+
 
 def on_back():
     """切换回主界面"""
@@ -97,22 +106,63 @@ def on_back():
     main_ui['search_frame'].pack(side="top", fill="x")
     main_ui['main_frame'].pack(fill="both", expand=True)
 
+
 def on_search():
     """主界面搜索高亮"""
     highlight_search(main_ui['text_box'], main_ui['search_entry'])
+
 
 def on_input(entry):
     """主界面输入自动打字"""
     input_text = entry.get()
     if not input_text:
         return
+
     def input_thread():
         keyboard = Controller()
         time.sleep(1)
         keyboard.type(input_text)
         time.sleep(0.5)
         entry.delete(0, 'end')
+
     thread.start_new_thread(input_thread, ())
+
+
+def update_ai_text(content):
+    ai_ui['ai_text_box'].config(state='normal')
+    ai_ui['ai_text_box'].delete('1.0', tk.END)  # 回答前先清空
+    ai_ui['ai_text_box'].insert(tk.END, "\n" + content)
+    ai_ui['ai_text_box'].config(state='disabled')
+
+
+def run_ai():
+    try:
+        if type == 1:
+            wsParam = Ws_Param(appid, api_key, api_secret, Spark_url)
+            websocket.enableTrace(False)
+            wsUrl = wsParam.create_url()
+            query = ai_ui['ai_search_entry'].get()
+            ws = websocket.WebSocketApp(wsUrl,
+                                        on_message=functools.partial(on_message, ai_text_box=ai_ui['ai_text_box'],
+                                                                     update_ai_text=update_ai_text, root=root),
+                                        on_error=functools.partial(on_error, update_ai_text=update_ai_text),
+                                        on_close=functools.partial(on_close, update_ai_text=update_ai_text),
+                                        on_open=lambda ws: on_open(ws, lambda ws: run(ws, appid, query, domain))
+                                        )
+            ws.appid = appid
+            ws.query = query
+            ws.domain = domain
+            ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
+        elif type == 2:
+            response = call_deepseek_api(deepseek_api_key, ai_ui['ai_search_entry'].get(), deepseek_model)
+            root.after(0, lambda: update_ai_text(response))
+            # 显示结果
+            show_options(response.strip())
+    except Exception as e:
+        root.after(0, lambda: update_ai_text(f"发生错误: {str(e)}"))
+    finally:
+        root.after(0, lambda: ai_ui['ai_search_button'].config(state='normal'))
+
 
 def on_ai_search():
     """AI界面AI搜索，支持讯飞星火和Deepseek"""
@@ -123,49 +173,25 @@ def on_ai_search():
         ai_ui['ai_text_box'].delete('1.0', tk.END)
         ai_ui['ai_text_box'].insert(tk.END, "正在思考中，请稍候...")
         ai_ui['ai_text_box'].config(state='disabled')
-    def update_ai_text(content):
-        ai_ui['ai_text_box'].config(state='normal')
-        ai_ui['ai_text_box'].delete('1.0', tk.END)  # 回答前先清空
-        ai_ui['ai_text_box'].insert(tk.END, "\n"+content)
-        ai_ui['ai_text_box'].config(state='disabled')
-    def run_ai():
-        try:
-            if type == 1:
-                wsParam = Ws_Param(appid, api_key, api_secret, Spark_url)
-                websocket.enableTrace(False)
-                wsUrl = wsParam.create_url()
-                query = ai_ui['ai_search_entry'].get()
-                ws = websocket.WebSocketApp(wsUrl,
-                    on_message=functools.partial(on_message, ai_text_box=ai_ui['ai_text_box'], update_ai_text=update_ai_text, root=root),
-                    on_error=functools.partial(on_error, update_ai_text=update_ai_text),
-                    on_close=functools.partial(on_close, update_ai_text=update_ai_text),
-                    on_open=lambda ws: on_open(ws, lambda ws: run(ws, appid, query, domain))
-                )
-                ws.appid = appid
-                ws.query = query
-                ws.domain = domain
-                ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
-            elif type == 2:
-                response = call_deepseek_api(deepseek_api_key, ai_ui['ai_search_entry'].get(), deepseek_model)
-                root.after(0, lambda: update_ai_text(response))
-        except Exception as e:
-            root.after(0, lambda: update_ai_text(f"发生错误: {str(e)}"))
-        finally:
-            root.after(0, lambda: ai_ui['ai_search_button'].config(state='normal'))
+
     thread.start_new_thread(run_ai, ())
+
 
 def on_ai_input(entry):
     """AI界面输入自动打字"""
     input_text = entry.get()
     if not input_text:
         return
+
     def input_thread():
         keyboard = Controller()
         time.sleep(1)
         keyboard.type(input_text)
         time.sleep(0.5)
         entry.delete(0, 'end')
+
     thread.start_new_thread(input_thread, ())
+
 
 # 最终完整版正确的截图识别函数
 def on_screenshot():
@@ -186,13 +212,25 @@ def on_screenshot():
         top_search_box.insert(0, select_text)  # 填入识别后的文字
         top_search_box.focus()  # 可选：光标自动聚焦到搜索框，直接回车搜索
 
+    # ai搜索
+    on_ai_search()
+
+
+def show_options(ai_answer_all: str):
+    print(ai_answer_all)
+
+    # 移动鼠标
+    options = ai_answer_all.split("#")
+
+    for option in options:
+        move_abcd().get(option[0])()
+        time.sleep(0.05)
 
 
 # 加载配置（若无则使用写死的讯飞星火默认配置，不创建文件）
 config = load_config_if_exists()
 
 # 启动验证与版本检测已移除，直接进入主程序
-
 deepseek_config = (config or {}).get('deepseek', {})
 deepseek_api_key = deepseek_config.get('api_key', deepseek_api_key)
 deepseek_model = deepseek_config.get('model', deepseek_model)
@@ -221,6 +259,7 @@ root.attributes("-alpha", current_opacity)
 root.configure(bg='white')
 root.overrideredirect(True)
 
+
 def open_settings():
     def on_save(api_key_value, model_value):
         try:
@@ -234,6 +273,7 @@ def open_settings():
             type = 2
         except Exception:
             return
+
     global settings_ui
     # 如果尚未创建，先创建嵌入式设置界面
     if 'settings_ui' not in globals():
@@ -262,6 +302,7 @@ def open_settings():
     if ai_ui['ai_frame'].winfo_ismapped():
         ai_ui['ai_frame'].pack_forget()
     settings_ui['settings_frame'].pack(fill="both", expand=True)
+
 
 # 创建主界面、AI界面与（懒加载）设置界面
 main_ui = create_main_ui(root, on_ai_button, on_search, on_input, text_size, on_settings=open_settings)
