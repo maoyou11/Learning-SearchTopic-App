@@ -75,9 +75,14 @@ def create_main_ui(root, on_ai_button, on_search, on_input, text_size=10, on_set
         settings_button = tk.Button(search_frame, text="设置", command=on_settings)
         settings_button.pack(side="right", padx=5, pady=5)
         settings_button.configure(foreground='gray')
+
     ai_button = tk.Button(search_frame, text="AI", command=on_ai_button)
     ai_button.pack(side="right", padx=5, pady=5)
     ai_button.configure(foreground='gray')
+
+    # 切换ai
+    root.bind("<F5>", lambda event: on_ai_button())
+
     search_button = tk.Button(search_frame, text="搜索", command=lambda: on_search())
     search_button.pack(side="right", padx=5, pady=5)
     search_button.configure(foreground='gray')

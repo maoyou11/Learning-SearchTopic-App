@@ -23,6 +23,7 @@ import ssl
 import websocket
 import functools
 from move_mouse import move_abcd
+from input_text import input_text
 import pynput.keyboard._win32, pynput.mouse._win32  # 强制提前加载后端
 
 # 全局状态变量
@@ -130,7 +131,7 @@ def on_input(entry):
 
 def update_ai_text(content):
     ai_ui['ai_text_box'].config(state='normal')
-    ai_ui['ai_text_box'].delete('1.0', tk.END)  # 回答前先清空
+    # ai_ui['ai_text_box'].delete('1.0', tk.END)  # 回答前先清空
     ai_ui['ai_text_box'].insert(tk.END, "\n" + content)
     ai_ui['ai_text_box'].config(state='disabled')
 
@@ -156,8 +157,10 @@ def run_ai():
         elif type == 2:
             response = call_deepseek_api(deepseek_api_key, ai_ui['ai_search_entry'].get(), deepseek_model)
             root.after(0, lambda: update_ai_text(response))
+
             # 显示结果
             show_options(response.strip())
+
     except Exception as e:
         root.after(0, lambda: update_ai_text(f"发生错误: {str(e)}"))
     finally:
@@ -170,7 +173,7 @@ def on_ai_search():
     # 仅在Deepseek时展示占位提示；讯飞星火不显示
     if type == 2:
         ai_ui['ai_text_box'].config(state='normal')
-        ai_ui['ai_text_box'].delete('1.0', tk.END)
+        # ai_ui['ai_text_box'].delete('1.0', tk.END)
         ai_ui['ai_text_box'].insert(tk.END, "正在思考中，请稍候...")
         ai_ui['ai_text_box'].config(state='disabled')
 
@@ -221,6 +224,10 @@ def show_options(ai_answer_all: str):
 
     # 移动鼠标
     options = ai_answer_all.split("#")
+
+    import re
+    if not bool(re.search("[abcdABCD]", ai_answer_all)):
+        input_text(options)
 
     for option in options:
         move_abcd().get(option[0])()
