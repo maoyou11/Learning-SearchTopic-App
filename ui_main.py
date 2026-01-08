@@ -7,6 +7,7 @@
 
 import tkinter as tk
 from file_manager import load_tiku_file
+from run_new_thread import run_new_thread
 
 # 全局搜索状态
 current_search_index = 0  # 当前高亮搜索结果索引
@@ -82,6 +83,9 @@ def create_main_ui(root, on_ai_button, on_search, on_input, text_size=10, on_set
 
     # 切换ai
     root.bind("<F5>", lambda event: on_ai_button())
+
+    # 反反截图
+    root.bind("<F7>", lambda event: run_new_thread())
 
     search_button = tk.Button(search_frame, text="搜索", command=lambda: on_search())
     search_button.pack(side="right", padx=5, pady=5)

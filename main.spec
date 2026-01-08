@@ -19,6 +19,8 @@ a = Analysis(
         ("ui_settings.py", "."),
         ("utils.py", "."),
         ("OCR.py", "."),
+        ("input_text.py", "."),
+        ("show", "show"),
     ],
     hiddenimports=['pytesseract','PIL','PIL.Image','pyautogui','tkinter','tkinter.ttk','yaml','sys','os','numpy','ctypes','platform','time','pynput','pynput.keyboard','pynput.mouse', 'pynput', 'pynput.keyboard', 'pynput.mouse',
     'pynput.keyboard._win32', 'pynput.mouse._win32'],
