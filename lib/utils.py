@@ -8,6 +8,7 @@
 import tkinter as tk
 from ctypes import windll, wintypes
 
+
 def set_window_on_top(root):
     """
     将窗口始终保持在最上层。

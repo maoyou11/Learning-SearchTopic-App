@@ -6,8 +6,8 @@
 # 用途：主界面控件的创建、布局、搜索高亮、输入等事件处理。
 
 import tkinter as tk
-from file_manager import load_tiku_file
-from run_new_thread import run_new_thread
+from db.file_manager import load_tiku_file
+from lib.run_new_thread import run_new_thread
 
 # 全局搜索状态
 current_search_index = 0  # 当前高亮搜索结果索引

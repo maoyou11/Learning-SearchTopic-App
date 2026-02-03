@@ -1,0 +1,9 @@
+deepseek:
+  api_key:
+  model: deepseek-chat
+
+ocr:
+    app_id:
+    api_key:
+    secret_key:
+

@@ -11,7 +11,7 @@ def load_tiku_file(text_box):
     :param text_box: Tkinter Text控件，用于显示题库内容。
     """
     try:
-        with open('tiku.txt', 'r', encoding='utf-8') as file:
+        with open('./db/datas/tiku.txt', 'r', encoding='utf-8') as file:
             content = file.read()
             text_box.insert('1.0', content)
             text_box.config(state='disabled')
