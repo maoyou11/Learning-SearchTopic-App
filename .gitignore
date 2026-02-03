@@ -16,5 +16,6 @@ __pycache__/
 .pytest_cache/
 .gitignore
 copy
+run/main.spec
 
 
