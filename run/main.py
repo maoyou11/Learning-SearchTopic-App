@@ -6,24 +6,24 @@
 # 用途：程序主入口，负责加载配置、初始化界面、事件绑定、AI调用与主流程调度。
 
 import tkinter as tk
-from tkinter import messagebox
 import _thread as thread
 import time
+
+import pyautogui
 from pynput.keyboard import Controller
-from config_manager import load_config_if_exists, save_deepseek_config
-from file_manager import load_tiku_file
-from ai_spark import Ws_Param, on_error, on_close, on_open, run, on_message
-from ai_deepseek import call_deepseek_api
-from utils import set_window_on_top, change_opacity, change_opacity0, close_window, change_weight
-from ui_main import create_main_ui, highlight_search, next_search_result
-from ui_ai import create_ai_ui
-from ui_settings import create_settings_ui, create_settings_embedded
-from OCR import run as ocr_run
+from conf.config_manager import load_config_if_exists, save_deepseek_config
+from ai_API.ai_spark import Ws_Param, on_error, on_close, on_open, run, on_message
+from ai_API.ai_deepseek import call_deepseek_api
+from lib.utils import set_window_on_top, change_opacity, change_opacity0, close_window, change_weight
+from ui.ui_main import create_main_ui, highlight_search, next_search_result
+from ui.ui_ai import create_ai_ui
+from ui.ui_settings import create_settings_embedded
+from lib.Screenshot_OCR import run as ocr_run
 import ssl
 import websocket
 import functools
-from move_mouse import move_abcd
-from input_text import input_text
+from lib.input_text import input_mixed_text
+from lib.OCR import ocr_options, ocr_next
 import pynput.keyboard._win32, pynput.mouse._win32  # 强制提前加载后端
 
 # 全局状态变量
@@ -38,6 +38,8 @@ app_id = ''  # ocr app_id
 api_key = ''  # ocr api_key
 secret_key = ''  # ocr secret_key
 ai_answer_all = ''
+next_answer = ''
+MODE = "TEST"
 
 
 # 事件处理函数
@@ -138,6 +140,7 @@ def update_ai_text(content):
 
 def run_ai():
     try:
+        print(type)
         if type == 1:
             wsParam = Ws_Param(appid, api_key, api_secret, Spark_url)
             websocket.enableTrace(False)
@@ -160,6 +163,8 @@ def run_ai():
 
             # 显示结果
             show_options(response.strip())
+
+            input("AA")
 
     except Exception as e:
         root.after(0, lambda: update_ai_text(f"发生错误: {str(e)}"))
@@ -199,24 +204,34 @@ def on_ai_input(entry):
 # 最终完整版正确的截图识别函数
 def on_screenshot():
     # 调用你的OCR识别函数，拿到识别的文字
-    select_text = ocr_run(app_id, api_key, secret_key)
+    select_text, is_end = ocr_run(app_id, api_key, secret_key)
+
+    if not select_text:
+        return
+
     # 判断识别到有效文字，才插入文本框
-    if select_text:
-        ai_ui['ai_text_box'].delete('1.0', tk.END)  # 回答前先清空
+    ai_ui['ai_text_box'].delete('1.0', tk.END)  # 回答前先清空
 
-        # 1. 在文本框末尾追加识别的文字 + 换行（不会覆盖原有内容）
-        ai_ui['ai_text_box'].insert(tk.END, select_text + '\n')
-        # 2. 自动滚动到文本框最底部，方便查看最新识别的内容
-        ai_ui['ai_text_box'].see(tk.END)
+    # 1. 在文本框末尾追加识别的文字 + 换行（不会覆盖原有内容）
+    ai_ui['ai_text_box'].insert(tk.END, select_text + '\n')
+    # 2. 自动滚动到文本框最底部，方便查看最新识别的内容
+    ai_ui['ai_text_box'].see(tk.END)
 
-        # ========== 核心代码：给【顶部搜索框】填入识别文字 ==========
-        top_search_box = ai_ui["ai_search_entry"]  # 获取顶部搜索框控件
-        top_search_box.delete(0, tk.END)  # 清空搜索框原有内容
-        top_search_box.insert(0, select_text)  # 填入识别后的文字
-        top_search_box.focus()  # 可选：光标自动聚焦到搜索框，直接回车搜索
+    # ========== 核心代码：给【顶部搜索框】填入识别文字 ==========
+    top_search_box = ai_ui["ai_search_entry"]  # 获取顶部搜索框控件
+    top_search_box.delete(0, tk.END)  # 清空搜索框原有内容
+    top_search_box.insert(0, select_text)  # 填入识别后的文字
+    top_search_box.focus()  # 可选：光标自动聚焦到搜索框，直接回车搜索
 
     # ai搜索
     on_ai_search()
+
+    if is_end:
+        return
+
+    if MODE == "TEST":
+        return
+    root.after(5000, on_screenshot)
 
 
 def show_options(ai_answer_all: str):
@@ -227,15 +242,35 @@ def show_options(ai_answer_all: str):
 
     import re
     if not bool(re.search("[abcdABCD]", ai_answer_all)):
-        input_text(options)
+        # 输入填空题答案
+        input_mixed_text(options)
 
+    # 选择题
     for option in options:
-        move_abcd().get(option[0])()
+        # 鼠标移动
+        # move_abcd().get(option[0])()
+
+        # 点击答案
+        midpoint = ocr_options(option[0])
+
+        # 1. 移动鼠标
+        pyautogui.moveTo(*midpoint, 1)
+
+        # 2. 左键单击（默认就是左键，无需额外配置）
+        pyautogui.click()
         time.sleep(0.05)
 
+    # 点击下一个
+    midpoint = ocr_next()
+    # 1. 移动鼠标
+    pyautogui.moveTo(*midpoint, 1)
+    # 2. 左键单击（默认就是左键，无需额外配置）
+    pyautogui.click()
+    time.sleep(0.05)
 
 # 加载配置（若无则使用写死的讯飞星火默认配置，不创建文件）
 config = load_config_if_exists()
+print(config)
 
 # 启动验证与版本检测已移除，直接进入主程序
 deepseek_config = (config or {}).get('deepseek', {})

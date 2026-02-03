@@ -3,6 +3,7 @@ import pyautogui
 
 length = 100
 
+
 def move_mouse(dx, dy, time):
     # 获取当前鼠标的绝对坐标 → 返回 (x, y) 元组
     x, y = pyautogui.position()
