@@ -17,5 +17,7 @@ __pycache__/
 .gitignore
 copy
 run/main.spec
+main.spec
+conf/settings.py
 
 
