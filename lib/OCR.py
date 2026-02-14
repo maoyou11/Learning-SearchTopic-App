@@ -3,6 +3,8 @@
 import cv2
 import numpy as np
 
+from conf.settings import *
+
 options = None
 screen_left_top_deviation = []
 screen_right_bottom_end_point = []
@@ -10,11 +12,11 @@ screen_right_bottom_end_point = []
 
 def image_init(image):
     # 导入图片
-    image_a = cv2.imread("./image/A.png")
-    image_b = cv2.imread("./image/B.png")
-    image_c = cv2.imread("./image/C.png")
-    image_d = cv2.imread("./image/D.png")
-    image_next = cv2.imread("./image/next.png")
+    image_a = cv2.imread(IMAGE_A_PATH)
+    image_b = cv2.imread(IMAGE_B_PATH)
+    image_c = cv2.imread(IMAGE_C_PATH)
+    image_d = cv2.imread(IMAGE_D_PATH)
+    image_next = cv2.imread(IMAGE_NEXT_PATH)
 
     # 选项字典
     global options
@@ -85,7 +87,7 @@ def find_options(gray_image, template):
 
 def ocr_options(correct_options=""):
     print(correct_options)
-    image = cv2.imread("./image/screen.png")
+    image = cv2.imread(IMAGE_SCREEN_PATH)
 
     options = image_init(image)
 
@@ -96,7 +98,7 @@ def ocr_options(correct_options=""):
     cat = image[start_height:end_height, start_width:end_width]
     gray_cat = cv2.cvtColor(cat, cv2.COLOR_BGR2GRAY)
 
-    cv2.imwrite("./image/title.png", cat)
+    cv2.imwrite(IMAGE_TITLE_PATH, cat)
 
     if not correct_options:
         return None
@@ -118,7 +120,7 @@ def ocr_options(correct_options=""):
 
 
 def ocr_next():
-    image = cv2.imread("./image/title.png")
+    image = cv2.imread(IMAGE_TITLE_PATH)
     # 匹配下一题
     next_point, (start_w_h, end_w_h) = find_options(image, options.get("next"))
 
@@ -129,9 +131,9 @@ def ocr_next():
 
 
 def test_save(image_name, start_w_h, end_w_h):
-    image = cv2.imread("./image/screen.png")
+    image = cv2.imread(IMAGE_SCREEN_PATH)
     # 画矩形
     cv2.rectangle(image, start_w_h, end_w_h, (0, 0, 255), 2)
     # cv2.imshow(f"{image_name}.png", test_image)
-    cv2.imwrite(f"./image/{image_name}.png", image)
+    cv2.imwrite(os.path.join(IMAGE_PATH, f"{image_name}.png"), image)
 

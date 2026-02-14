@@ -9,6 +9,8 @@ import os
 import yaml
 from tkinter import messagebox
 
+from conf.settings import *
+
 
 class FileNotFoundError(Exception):
     """自定义异常：配置文件未找到（保留但不再强制触发）"""
@@ -17,7 +19,8 @@ class FileNotFoundError(Exception):
 
 def config_file_exists():
     """返回当前目录下是否存在config.yaml文件"""
-    config_name = "./conf/config.yaml"
+    config_name = CONF_YAML_PATH
+    print(config_name)
     if os.path.exists(config_name):
         return True
 
@@ -28,7 +31,7 @@ def load_config_if_exists():
     """若存在config.yaml则加载返回配置字典，否则返回None"""
     if not config_file_exists():
         return None
-    with open('./conf/config.yaml', 'r', encoding='utf-8') as f:
+    with open(CONF_YAML_PATH, 'r', encoding='utf-8') as f:
         config = yaml.safe_load(f) or {}
     return config
 
@@ -41,5 +44,5 @@ def save_deepseek_config(api_key, model):
             'model': model
         }
     }
-    with open('./conf/config.yaml', 'w', encoding='utf-8') as f:
+    with open(CONF_YAML_PATH, 'w', encoding='utf-8') as f:
         yaml.safe_dump(data, f, allow_unicode=True, sort_keys=False)

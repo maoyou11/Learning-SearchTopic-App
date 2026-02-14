@@ -5,13 +5,15 @@
 # Github : https://github.com/SJYssr
 # 用途：负责题库文件（tiku.txt）的读取，供主界面加载题库内容。
 
+from conf.settings import *
+
 def load_tiku_file(text_box):
     """
     读取 tiku.txt 文件内容到传入的文本框控件。
     :param text_box: Tkinter Text控件，用于显示题库内容。
     """
     try:
-        with open('./db/datas/tiku.txt', 'r', encoding='utf-8') as file:
+        with open(DATAS_TIKU_PATH, 'r', encoding='utf-8') as file:
             content = file.read()
             text_box.insert('1.0', content)
             text_box.config(state='disabled')

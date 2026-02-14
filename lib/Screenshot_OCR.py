@@ -1,12 +1,13 @@
 # -*- coding:utf-8 -*-
 import pyautogui
 
+from conf.settings import *
 from lib.OCR import ocr_options
 
 
 def select_area_ocr(app_id, api_key, secret_key):
     # 全屏截图
-    fullscreen_ocr(0, "./image/screen.png")
+    fullscreen_ocr(0, IMAGE_SCREEN_PATH)
 
     if not (app_id and api_key and secret_key):
         return ""
@@ -16,7 +17,7 @@ def select_area_ocr(app_id, api_key, secret_key):
 
     # 手动追加cmd里的所有参数，和你测试成功的命令完全一致
     # 识别
-    text = get_text("./image/title.png", app_id, api_key, secret_key)
+    text = get_text(IMAGE_TITLE_PATH, app_id, api_key, secret_key)
 
     return text
 

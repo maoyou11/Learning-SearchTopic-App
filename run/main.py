@@ -4,27 +4,29 @@
 # ClassName : main.py
 # Github : https://github.com/SJYssr
 # 用途：程序主入口，负责加载配置、初始化界面、事件绑定、AI调用与主流程调度。
+from conf.settings import *
+try:
+    import tkinter as tk
+    import _thread as thread
+    import time
 
-import tkinter as tk
-import _thread as thread
-import time
-
-import pyautogui
-from pynput.keyboard import Controller
-from conf.config_manager import load_config_if_exists, save_deepseek_config
-from ai_API.ai_spark import Ws_Param, on_error, on_close, on_open, run, on_message
-from ai_API.ai_deepseek import call_deepseek_api
-from lib.utils import set_window_on_top, change_opacity, change_opacity0, close_window, change_weight
-from ui.ui_main import create_main_ui, highlight_search, next_search_result
-from ui.ui_ai import create_ai_ui
-from ui.ui_settings import create_settings_embedded
-from lib.Screenshot_OCR import run as ocr_run
-import ssl
-import websocket
-import functools
-from lib.input_text import input_mixed_text
-from lib.OCR import ocr_options, ocr_next
-import pynput.keyboard._win32, pynput.mouse._win32  # 强制提前加载后端
+    import pyautogui
+    from pynput.keyboard import Controller
+    from conf.config_manager import load_config_if_exists, save_deepseek_config
+    from ai_API.ai_spark import Ws_Param, on_error, on_close, on_open, run, on_message
+    from ai_API.ai_deepseek import call_deepseek_api
+    from lib.utils import set_window_on_top, change_opacity, change_opacity0, close_window, change_weight
+    from ui.ui_main import create_main_ui, highlight_search, next_search_result
+    from ui.ui_ai import create_ai_ui
+    from ui.ui_settings import create_settings_embedded
+    from lib.Screenshot_OCR import run as ocr_run
+    import ssl
+    import websocket
+    import functools
+    from lib.input_text import input_mixed_text
+    from lib.OCR import ocr_options, ocr_next
+except ImportError as e:
+    ERROR_LOG.error(f"导入错误: {e}")
 
 # 全局状态变量
 current_opacity = 0.5  # 窗口透明度
@@ -164,10 +166,8 @@ def run_ai():
             # 显示结果
             show_options(response.strip())
 
-            input("AA")
-
     except Exception as e:
-        root.after(0, lambda: update_ai_text(f"发生错误: {str(e)}"))
+        ERROR_LOG.error(f"发生错误: {str(e)}")
     finally:
         root.after(0, lambda: ai_ui['ai_search_button'].config(state='normal'))
 
