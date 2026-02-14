@@ -83,7 +83,7 @@ def run(app_id=None, api_key=None, secret_key=None):
         return select_text, True
 
     # 打印识别结果
-    return select_text if select_text else "识别失败\n", False
+    return select_text, False
 
 
 if __name__ == '__main__':

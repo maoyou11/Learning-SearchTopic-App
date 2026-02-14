@@ -23,6 +23,7 @@ def set_window_on_top(root):
     SetWindowDisplayAffinity(hwnd, dwAffinity)
     root.after(1000, lambda: set_window_on_top(root))
 
+
 def change_opacity(event, root, current_opacity, is_small):
     """
     Ctrl+滚轮调整窗口透明度。
@@ -38,7 +39,8 @@ def change_opacity(event, root, current_opacity, is_small):
     root.attributes("-alpha", current_opacity)
     return current_opacity
 
-def change_opacity0(event, root, current_opacity, is_small):
+
+def change_opacity0(root, current_opacity, is_small):
     """
     右键切换窗口透明度0.2/0.5。
     :return: 新的透明度
@@ -52,11 +54,13 @@ def change_opacity0(event, root, current_opacity, is_small):
     root.attributes("-alpha", current_opacity)
     return current_opacity
 
+
 def close_window(event, root):
     """关闭窗口"""
     root.destroy()
 
-def change_weight(event, root, is_small, current_opacity):
+
+def change_weight(root, is_small, current_opacity):
     """
     F3切换窗口大小。
     :return: (新的is_small, 新的current_opacity)
