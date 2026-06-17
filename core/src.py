@@ -13,8 +13,9 @@ from pynput.keyboard import Controller
 from conf.config_manager import load_config_if_exists, save_deepseek_config
 from ai_API.ai_spark import Ws_Param, on_error, on_close, on_open, run, on_message
 from ai_API.ai_deepseek import call_deepseek_api
-from lib.utils import set_window_on_top, change_opacity, change_opacity0, change_weight
-from ui.ui_main import highlight_search
+from lib.utils import set_window_on_top, change_opacity, change_opacity0, close_window, change_weight
+from ui.ui_main import create_main_ui, highlight_search, next_search_result
+from ui.ui_ai import create_ai_ui
 from lib.Screenshot_OCR import run as ocr_run
 import ssl
 import websocket
@@ -22,6 +23,7 @@ import functools
 from lib.input_text import input_mixed_text
 from lib.OCR import ocr_options, ocr_next
 from conf.settings import *
+from ui.ui_settings import create_settings_embedded
 from ui.ui_tk import TkMainUi
 import tkinter as tk
 
@@ -34,8 +36,8 @@ class Auto_click(TkMainUi):
         self.is_small = False  # 窗口大小状态
 
         self.load_config()
-        self.start()
         self.on_change_weight()
+        self.start()
 
     # 事件处理函数
     def start_move(self, event):
@@ -202,6 +204,8 @@ class Auto_click(TkMainUi):
         # 调用你的OCR识别函数，拿到识别的文字
         self.search_text, is_end = ocr_run(self.app_id, self.api_key, self.secret_key)
 
+        # self.update_ai_text(f"{self.search_text[:20]}... {is_end}\n")
+
         if not self.search_text:
             return
 
@@ -211,7 +215,7 @@ class Auto_click(TkMainUi):
         if is_end:
             return
 
-        self.root.after(5000, self.on_screenshot)
+        self.root.after(9000, self.on_screenshot)
 
     @staticmethod
     # 点击输入答案

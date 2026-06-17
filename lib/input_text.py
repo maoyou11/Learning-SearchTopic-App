@@ -112,31 +112,15 @@ def input_chinese_by_pinyin(chinese_text, pinyin_list=None):
 
 
 def input_mixed_text(text_list):
-    """
-    输入混合文本（中文+数字+字母）
-    :param text_list: 文本列表（如[98498498, "大赛和测试"]）
-    """
-    delay_before_start = 3  # 切换到输入框的时间
-    char_interval = 0.05  # 字符输入间隔
+    print(text_list)
+    from lib.auto_input_text import auto_type
+    import time
 
-    print(f"请在{delay_before_start}秒内切换到输入框...")
-    time.sleep(delay_before_start)
+    # 3秒切换到输入框
+    time.sleep(3)
 
-    # 先切换到中文输入法
-    switch_to_chinese_input()
-
-    for text in text_list:
-        text = str(text)
-        # 区分数字/字母和中文
-        for char in text:
-            if '\u4e00' <= char <= '\u9fff':  # 中文汉字
-                input_chinese_by_pinyin(char)
-            else:  # 数字/字母/符号
-                simulate_single_key(char)
-                time.sleep(char_interval)
-        # 每个文本后按回车
-        simulate_single_key('\n')
-        time.sleep(0.2)
+    # 直接打中文
+    auto_type(str(text_list))
 
 
 

@@ -86,7 +86,6 @@ def find_options(gray_image, template):
 
 
 def ocr_options(correct_options=""):
-    print(correct_options)
     image = cv2.imread(IMAGE_SCREEN_PATH)
 
     options = image_init(image)

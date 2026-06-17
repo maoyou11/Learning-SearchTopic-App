@@ -1,0 +1,2 @@
+2026-03-30 20:16:59 Dummy-1:25588 [error] ERROR [D:\python_Project\CX_EXAM_python-2.0.6\core\src.py:168] 发生错误: OpenCV(4.5.5) D:\a\opencv-python\opencv-python\opencv\modules\imgproc\src\color.cpp:182: error: (-215:Assertion failed) !_src.empty() in function 'cv::cvtColor'
+

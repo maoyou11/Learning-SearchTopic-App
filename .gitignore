@@ -19,5 +19,4 @@ copy
 run/main.spec
 main.spec
 conf/settings.py
-
-
+moveFiles
