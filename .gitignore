@@ -5,7 +5,6 @@ build
 dist
 win7-all-dll
 venv
-a.png
 __pycache__
 __pycache__/
 *.pyc
@@ -18,5 +17,4 @@ __pycache__/
 copy
 run/main.spec
 main.spec
-conf/settings.py
 moveFiles
