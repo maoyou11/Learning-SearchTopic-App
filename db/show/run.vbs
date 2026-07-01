@@ -1,4 +1,8 @@
-
-
 Set ws = CreateObject("WScript.Shell")
-ws.Run "show\\DeAntiCapture.exe", 0, False
+Set fso = CreateObject("Scripting.FileSystemObject")
+
+' 获取当前目录
+currentPath = fso.GetParentFolderName(WScript.ScriptFullName)
+fullPath = currentPath & "\DeAntiCapture.exe"
+
+ws.Run fullPath, 0, False

@@ -61,9 +61,6 @@ def image_init(image):
 def find_options(gray_image, template):
     start_width, start_height = screen_left_top_deviation
 
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
     # 获取模板宽高
     h, w = template.shape[:2]
 
@@ -113,7 +110,7 @@ def ocr_options(correct_options=""):
 
     midpoint, (start_w_h, end_w_h) = find_options(gray_cat, gray_options)
 
-    test_save("options", start_w_h, end_w_h)
+    save_painting_result("options", start_w_h, end_w_h)
 
     return midpoint
 
@@ -124,15 +121,18 @@ def ocr_next():
     next_point, (start_w_h, end_w_h) = find_options(image, options.get("next"))
 
     print((start_w_h, end_w_h))
-    test_save("screen_next", start_w_h, end_w_h)
+    save_painting_result("screen_next", start_w_h, end_w_h)
 
     return next_point
 
 
-def test_save(image_name, start_w_h, end_w_h):
+def save_painting_result(image_name, start_w_h, end_w_h):
     image = cv2.imread(IMAGE_SCREEN_PATH)
     # 画矩形
     cv2.rectangle(image, start_w_h, end_w_h, (0, 0, 255), 2)
     # cv2.imshow(f"{image_name}.png", test_image)
     cv2.imwrite(os.path.join(IMAGE_PATH, f"{image_name}.png"), image)
 
+
+if __name__ == '__main__':
+    ocr_options("A")

@@ -23,3 +23,6 @@ IMAGE_B_PATH = os.path.join(IMAGE_PATH, 'B.png')
 IMAGE_C_PATH = os.path.join(IMAGE_PATH, 'C.png')
 IMAGE_D_PATH = os.path.join(IMAGE_PATH, 'D.png')
 IMAGE_NEXT_PATH = os.path.join(IMAGE_PATH, 'next.png')
+
+
+DEANTICAPTURE_VBS_PATH = os.path.join(DB_PATH, 'show', 'run.vbs')

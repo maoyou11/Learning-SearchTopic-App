@@ -242,6 +242,8 @@ class Auto_click(TkMainUi):
             # 1. 移动鼠标
             pyautogui.moveTo(*midpoint, 1)
 
+            time.sleep(1)
+
             # 2. 左键单击（默认就是左键，无需额外配置）
             pyautogui.click()
             time.sleep(0.05)
