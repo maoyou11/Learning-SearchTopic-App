@@ -1,9 +1,9 @@
 deepseek:
-  api_key: sk-8f0f9f51180c4ecbaf75daf71e7fe99d
-  model: deepseek-chat
+  api_key: 
+  model: 
 
 ocr:
-    app_id: 7382077
-    api_key: hPLzO7W8ifp07LjHJtvhnBZ8
-    secret_key: g43iNVkGmoZXjIKmtVtYy0PHLhdgliGU
+    app_id: 
+    api_key: 
+    secret_key: 
 
