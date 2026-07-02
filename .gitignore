@@ -1,6 +1,6 @@
 win7-dll
 .idea
-conf/config.yaml
+./conf/config.yaml
 build
 dist
 win7-all-dll
@@ -18,3 +18,4 @@ copy
 run/main.spec
 main.spec
 moveFiles
+image

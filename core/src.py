@@ -157,7 +157,11 @@ class Auto_click(TkMainUi):
                 ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
 
             elif self.type == 2:
-                response = call_deepseek_api(self.deepseek_api_key, self.search_text or self.ai_ui['ai_search_entry'].get(), self.deepseek_model)
+                if hasattr("self", "search_text"):
+                    search_text = self.search_text
+                else:
+                    search_text = self.ai_ui['ai_search_entry'].get()
+                response = call_deepseek_api(self.deepseek_api_key, search_text, self.deepseek_model)
 
                 self.root.after(0, lambda: self.update_ai_text(response))
 
@@ -165,7 +169,7 @@ class Auto_click(TkMainUi):
                 self.show_options(response.strip())
 
         except Exception as e:
-            ERROR_LOG.error(f"发生错误: {str(e)}")
+            print(f"发生错误: {str(e)}")
         finally:
             self.root.after(0, lambda: self.ai_ui['ai_search_button'].config(state='normal'))
 
