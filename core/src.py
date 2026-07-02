@@ -26,6 +26,7 @@ from conf.settings import *
 from ui.ui_settings import create_settings_embedded
 from ui.ui_tk import TkMainUi
 import tkinter as tk
+from openai import OpenAI
 
 
 class Auto_click(TkMainUi):
@@ -157,19 +158,23 @@ class Auto_click(TkMainUi):
                 ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE})
 
             elif self.type == 2:
-                if hasattr("self", "search_text"):
+                if hasattr(self, "search_text"):
                     search_text = self.search_text
                 else:
                     search_text = self.ai_ui['ai_search_entry'].get()
-                response = call_deepseek_api(self.deepseek_api_key, search_text, self.deepseek_model)
 
-                self.root.after(0, lambda: self.update_ai_text(response))
+                response = call_deepseek_api(self.deepseek_ai_client, search_text, self.deepseek_model)
+
+                # 三元运算符
+
+                self.root.after(0, lambda: self.update_ai_text(response if response else  ""))
 
                 # 显示结果
                 self.show_options(response.strip())
 
         except Exception as e:
             print(f"发生错误: {str(e)}")
+            pass
         finally:
             self.root.after(0, lambda: self.ai_ui['ai_search_button'].config(state='normal'))
 
@@ -219,12 +224,11 @@ class Auto_click(TkMainUi):
         if is_end:
             return
 
-        self.root.after(9000, self.on_screenshot)
+        # self.root.after(9000, self.on_screenshot)
 
     @staticmethod
     # 点击输入答案
     def show_options(ai_answer_all: str):
-        print(ai_answer_all)
 
         # 移动鼠标
         options = ai_answer_all.split("#")
@@ -301,12 +305,20 @@ class Auto_click(TkMainUi):
             self.Spark_url = "wss://spark-api.xf-yun.com/v1.1/chat"
             self.domain = "lite"
 
+    def init_client(self):
+        # 初始化 DeepSeek 客户端
+        self.deepseek_ai_client = OpenAI(
+            api_key=self.config["deepseek"]["api_key"],
+            base_url="https://api.deepseek.com"  # 官方标准 Base URL
+        )
+
     # 启动
     def start(self):
-        print(self.config)
 
         # 启动窗口置顶
         set_window_on_top(self.root)
+
+        self.init_client()
 
         # 启动主循环
         self.root.mainloop()

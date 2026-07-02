@@ -79,8 +79,6 @@ def run(app_id=None, api_key=None, secret_key=None):
     # 调用鼠标框选识别（核心功能，无任何报错）
     select_text = select_area_ocr(str(app_id), str(api_key), str(secret_key))
 
-    print(select_text, 1)
-
     if "下一步" in select_text:
         return select_text, True
 
