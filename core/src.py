@@ -248,25 +248,29 @@ class Auto_click(TkMainUi):
         # 移动鼠标
         options = ai_answer_all.split("#")
 
+        is_option = True
+
         import re
         if not bool(re.search("[abcdABCD]", ai_answer_all)):
-            # 输入填空题答案
-            # return
-            auto_type(*options)
+            is_option = False
+
+        print(options)
 
         # 选择题
         for option in options:
-            # 鼠标移动
-            # move_abcd().get(option[0])()
 
-            # 点击答案
-            midpoint = ocr_options(option[0])
+            if is_option:
+                # 点击答案
+                midpoint = ocr_options(option[0].upper())
 
-            self.release_mouse_capture()
+                self.release_mouse_capture()
 
-            # 2. 左键单击（默认就是左键，无需额外配置）
-            pyautogui.click(*midpoint, duration=1)
-            time.sleep(0.05)
+                # 2. 左键单击（默认就是左键，无需额外配置）
+                pyautogui.click(*midpoint, duration=1)
+                time.sleep(0.05)
+
+            else:
+                auto_type(option)
 
         # 点击下一个
         midpoint = ocr_next()
