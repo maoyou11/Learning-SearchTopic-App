@@ -13,6 +13,7 @@ from pynput.keyboard import Controller
 from conf.config_manager import load_config_if_exists, save_deepseek_config
 from ai_API.ai_spark import Ws_Param, on_error, on_close, on_open, run, on_message
 from ai_API.ai_deepseek import call_deepseek_api
+from lib.auto_input_text import auto_type
 from lib.utils import set_window_on_top, change_opacity, change_opacity0, close_window, change_weight
 from ui.ui_main import create_main_ui, highlight_search, next_search_result
 from ui.ui_ai import create_ai_ui
@@ -38,7 +39,6 @@ class Auto_click(TkMainUi):
 
         self.load_config()
         self.on_change_weight()
-        self.start()
 
     # 事件处理函数
     def start_move(self, event):
@@ -226,9 +226,24 @@ class Auto_click(TkMainUi):
 
         # self.root.after(9000, self.on_screenshot)
 
-    @staticmethod
+    def release_mouse_capture(self):
+        """释放 Win32 鼠标捕获，不改变窗口样式"""
+
+        import ctypes
+        # 1. 发送 WM_CANCELMODE 消息，取消窗口的模态捕获
+        ctypes.windll.user32.SendMessageW(
+            self.root.winfo_id(), 0x001F, 0, 0
+        )
+        # 2. 释放鼠标捕获
+        ctypes.windll.user32.ReleaseCapture()
+        # 3. 短暂改变透明度，强制窗口让出焦点后再恢复
+        self.root.attributes("-alpha", 0.99)
+        self.root.update()
+        self.root.attributes("-alpha", 1.00)
+        time.sleep(0.1)
+
     # 点击输入答案
-    def show_options(ai_answer_all: str):
+    def show_options(self, ai_answer_all: str):
 
         # 移动鼠标
         options = ai_answer_all.split("#")
@@ -236,8 +251,8 @@ class Auto_click(TkMainUi):
         import re
         if not bool(re.search("[abcdABCD]", ai_answer_all)):
             # 输入填空题答案
-            return
-            input_mixed_text(options)
+            # return
+            auto_type(*options)
 
         # 选择题
         for option in options:
@@ -247,13 +262,10 @@ class Auto_click(TkMainUi):
             # 点击答案
             midpoint = ocr_options(option[0])
 
-            # 1. 移动鼠标
-            pyautogui.moveTo(*midpoint, 1)
-
-            time.sleep(1)
+            self.release_mouse_capture()
 
             # 2. 左键单击（默认就是左键，无需额外配置）
-            pyautogui.click()
+            pyautogui.click(*midpoint, duration=1)
             time.sleep(0.05)
 
         # 点击下一个

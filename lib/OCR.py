@@ -33,7 +33,7 @@ def image_init(image):
 
     padding_left = 280
     padding_right = 279
-    padding_top = 165
+    padding_top = 50
     padding_bottom = 40
 
     # start_width_than = 0.14583333333333334
@@ -93,6 +93,9 @@ def ocr_options(correct_options=""):
     # 截取图像
     cat = image[start_height:end_height, start_width:end_width]
     gray_cat = cv2.cvtColor(cat, cv2.COLOR_BGR2GRAY)
+    # cv2.imshow("cat", gray_cat)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
     cv2.imwrite(IMAGE_TITLE_PATH, cat)
 
@@ -135,4 +138,4 @@ def save_painting_result(image_name, start_w_h, end_w_h):
 
 
 if __name__ == '__main__':
-    ocr_options("A")
+    ocr_options()
