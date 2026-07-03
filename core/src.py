@@ -236,11 +236,11 @@ class Auto_click(TkMainUi):
         )
         # 2. 释放鼠标捕获
         ctypes.windll.user32.ReleaseCapture()
-        # 3. 短暂改变透明度，强制窗口让出焦点后再恢复
-        self.root.attributes("-alpha", 0.99)
-        self.root.update()
-        self.root.attributes("-alpha", 1.00)
-        time.sleep(0.1)
+        # # 3. 短暂改变透明度，强制窗口让出焦点后再恢复
+        # self.root.attributes("-alpha", 0.99)
+        # self.root.update()
+        # self.root.attributes("-alpha", 1.00)
+        # time.sleep(0.1)
 
     # 点击输入答案
     def show_options(self, ai_answer_all: str):
@@ -271,6 +271,9 @@ class Auto_click(TkMainUi):
 
             else:
                 auto_type(option)
+
+                if len(option) > 25:
+                    time.sleep(10)
 
         # 点击下一个
         midpoint = ocr_next()
