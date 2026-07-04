@@ -49,6 +49,20 @@ def create_ai_ui(root, on_back, on_ai_search, on_input, on_screenshot, text_size
     # 绑定快捷键给主窗口root，确保焦点不在界面上也能触发（双重保险）
     root.bind("<x>", lambda event: on_screenshot())
 
+    # 方式1：绑定【F2】快捷键触发截图，推荐！全局通用、无冲突
+    ai_frame.bind("1", lambda event: on_screenshot())
+    # 绑定快捷键给主窗口root，确保焦点不在界面上也能触发（双重保险）
+    root.bind("1", lambda event: on_screenshot())
+
+    # 方式1：绑定【F2】快捷键触发截图，推荐！全局通用、无冲突
+    ai_frame.bind("<F2>", lambda event: on_screenshot())
+    # 绑定快捷键给主窗口root，确保焦点不在界面上也能触发（双重保险）
+    root.bind("<F2>", lambda event: on_screenshot())
+
+    # 改用 bind_all 绑定给整个应用
+    root.bind_all("<Button-3>", lambda event: on_screenshot())
+
+
     # 快捷键退出
     ai_frame.bind("<F6>", lambda event: sys.exit())
     root.bind("<F6>", lambda event: sys.exit())
