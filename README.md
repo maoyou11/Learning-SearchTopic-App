@@ -57,9 +57,10 @@
 
 1. 在[deepseek api](https://platform.deepseek.com/api_keys)申请deepseek密钥，复制api key
 2. 在[百度 AipOcr](https://console.bce.baidu.com/ai-engine/ocr/app/list)创建应用，创建完应用，点击查看应用详情，复制app_id, api_key, secret_key
-3. 填入`./conf/config.yaml`
-4. 运行`pip install -r requirements.txt`
-5. 运行`./run/mian.py`
+3. 运行`git clone https://github.com/maoyou11/Learning-SearchTopic-App.git`
+4. 填入`./conf/config.yaml`
+5. 运行`pip install -r requirements.txt`
+6. 运行`./run/mian.py`
 
 ## 免责声明
 
