@@ -1,9 +1,9 @@
 # _*_coding : UTF_8 _*_
-# author : SJYssr
-# Date : 2024/12/26 下午10:17
-# ClassName : config_manager.py
-# Github : https://github.com/SJYssr
 # 用途：负责加载和校验配置文件config.yaml，提供全局配置访问接口。
+
+# Copyright (C) 2026 YourName
+# Distributed under the GNU General Public License v3.0.
+# See the LICENSE file in the project root for full license text.
 
 import os
 import yaml

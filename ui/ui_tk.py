@@ -1,5 +1,9 @@
 # -*- coding:utf-8 -*-
 
+
+# Copyright (C) 2026 YourName
+# Distributed under the GNU General Public License v3.0.
+# See the LICENSE file in the project root for full license text.
 import tkinter as tk
 from ui.ui_ai import create_ai_ui
 from ui.ui_settings import create_settings_embedded

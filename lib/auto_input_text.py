@@ -1,4 +1,10 @@
 # -*- coding:utf-8 -*-
+# 自动打字
+
+# Copyright (C) 2026 YourName
+# Distributed under the GNU General Public License v3.0.
+# See the LICENSE file in the project root for full license text.
+
 import os.path
 import subprocess
 import time

@@ -1,8 +1,10 @@
 # _*_coding : UTF_8 _*_
-# author : SJYssr (extended)
-# Date : 2025/09/10
-# ClassName : ui_settings.py
 # 用途：设置界面（Deepseek配置），遵循主界面风格，保存到config.yaml。
+
+
+# Copyright (C) 2026 YourName
+# Distributed under the GNU General Public License v3.0.
+# See the LICENSE file in the project root for full license text.
 
 import tkinter as tk
 from tkinter import ttk

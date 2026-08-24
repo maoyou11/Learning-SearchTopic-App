@@ -1,9 +1,9 @@
 # _*_coding : UTF_8 _*_
-# author : SJYssr
-# Date : 2024/12/26 下午10:17
-# ClassName : main.py
-# Github : https://github.com/SJYssr
 # 用途：程序主入口，负责加载配置、初始化界面、事件绑定、AI调用与主流程调度。
+
+# Copyright (C) 2026 YourName
+# Distributed under the GNU General Public License v3.0.
+# See the LICENSE file in the project root for full license text.
 
 import _thread as thread
 import time
@@ -21,7 +21,6 @@ from lib.Screenshot_OCR import run as ocr_run
 import ssl
 import websocket
 import functools
-from lib.input_text import input_mixed_text
 from lib.OCR import ocr_options, ocr_next
 from conf.settings import *
 from ui.ui_settings import create_settings_embedded

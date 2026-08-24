@@ -1,9 +1,9 @@
 # _*_coding : UTF_8 _*_
-# author : SJYssr
-# Date : 2024/12/26 下午10:17
-# ClassName : ui_main.py
-# Github : https://github.com/SJYssr
 # 用途：主界面控件的创建、布局、搜索高亮、输入等事件处理。
+
+# Copyright (C) 2026 YourName
+# Distributed under the GNU General Public License v3.0.
+# See the LICENSE file in the project root for full license text.
 
 import tkinter as tk
 from db.file_manager import load_tiku_file
