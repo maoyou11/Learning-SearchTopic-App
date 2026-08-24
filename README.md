@@ -66,7 +66,7 @@
 
 > **本代码仅用于学习讨论，禁止用于盈利或违法用途。**
 
-- 遵循 [GPL-3.0 License](https://github.com/SJYssr/CX_EXAM_python/blob/main/LICENSE) 协议：
+- 遵循 [GPL-3.0 License](https://github.com/maoyou11/Learning-SearchTopic-App/blob/main/LICENSE) 协议：
   - 允许开源/免费使用、引用、修改、衍生
   - 禁止闭源商业发布、销售及盈利
   - 基于本代码的程序**必须**同样遵守GPL-3.0协议
